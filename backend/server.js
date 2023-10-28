@@ -6,10 +6,10 @@ const dotenv=require('dotenv')
 const connectDB = require('./Config/db')
 const cors=require('cors')
 const path = require("path")
+const cookieParser = require("cookie-parser")
 
 // config
 dotenv.config()
-
 
 
 // mongodb connection
@@ -19,6 +19,7 @@ connectDB();
 
 // rest obj
 const app=express();
+app.use(cookieParser())
 
 
 // middlewares

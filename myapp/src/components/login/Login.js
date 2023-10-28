@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import bg4 from '../../image/bg4.jpg'
 import bg5 from '../../image/bg5.jpg'
 import bg6 from '../../image/bg6.jpg'
+import Cookies from 'js-cookie';
 
 
 import './login.css';
@@ -30,11 +31,11 @@ const Login = () =>{
 
   const handleChange = (e) => {
     // Update the state when form fields change
-    console.log(e.target)
+    // console.log(e.target)
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    console.log(formData)
+    // console.log(formData)
   };
 
 
@@ -44,12 +45,18 @@ const Login = () =>{
     try {
         const res=await axios.post('http://localhost:8000/api/v1/user/login',formData)
         // window.location.reload()
-        console.log(res)
+        // console.log(res)
     //     // dispatch(hideLoading())
         if(res.data.success){
-            localStorage.setItem("token",res.data.token)
-            message.success("Login Successful")
-            navigate('/home')
+            // localStorage.setItem("token",res.data.token)
+            // message.success("Login Successful")
+            // navigate('/home')
+
+            // Store user information in a cookie
+            Cookies.set('user', JSON.stringify(res.data.user));
+            Cookies.set('token', res.data.token);
+            message.success('Login Successful');
+            navigate('/home');
         }else{
             message.error(res.data.message)
         }

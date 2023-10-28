@@ -1,12 +1,13 @@
 const userModel=require('../Model/userModel')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
+
 // const moment =require('moment')
 
 // // login callback
-console.log("****")
+// console.log("****")
 const loginController=async(req,res)=>{
-    console.log("&&&&")
+    // console.log("&&&&")
     try {
         const {email,password}=req.body
         console.log(email , password);
@@ -19,7 +20,9 @@ const loginController=async(req,res)=>{
         if(!isMatch){
             return res.status(200).json({message:'Invalid Email and Password',success:false})
         }
-        const token=jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:'1d'})
+        const token=jwt.sign({id:user._id},"abc",{expiresIn:'1d'})
+        res.cookie('token',token);
+        // res.localstorage()
         return res.status(200).json({message:'Login Successful',success:true,token})
     } catch (error) {
         return res.status(404).json({message:`Error in logging ${error}`,success:false})
@@ -51,5 +54,29 @@ const registerController=async(req,res)=>{
     }
 }
 
-module.exports={loginController,registerController}
+
+const authController=async(req,res)=>{
+    console.log("i am in baceknd of get user data")
+    try {
+        
+        const user=await userModel.findById({_id:req.body.userId})
+        user.password =undefined
+        if(!user){
+            return res.status(200).send({
+                message:"User not found",
+                success:false
+            })
+        }else{
+            return res.status(200).send({
+                data:user,
+                success:true
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(400).send({message:'auth error',success:false,error})
+    }
+}
+
+module.exports={loginController,registerController,authController}
 // module.exports={registerController}
